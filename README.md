@@ -12,3 +12,7 @@ Virtual reality software development project for completion of the bachelor's de
 - C#  
 - Blender  
 - Meta Quest 3  
+
+## Thesis
+Access the thesis [at this link] (https://docs.google.com/document/d/1XVo6foyedVBhJ3IcgSOLbBKXEcaCrMYBKirKcbfMZSA/edit?usp=sharing).
+
