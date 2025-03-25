@@ -38,6 +38,25 @@ ExportedObj/
 *.sln
 *.suo
 *.tmp
+
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+UserSettings/
+MemoryCaptures/
+
+# Visual Studio / Rider
+.vscode/
+.idea/
+*.sln
+*.csproj
+*.unityproj
+*.suo
+
 *.user
 *.userprefs
 *.pidb
@@ -72,3 +91,11 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+*.opendb
+*.VC.db
+
+# Git
+.git/
+.DS_Store
+
