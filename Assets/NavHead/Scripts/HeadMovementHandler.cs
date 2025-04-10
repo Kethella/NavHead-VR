@@ -17,46 +17,73 @@ public class HeadMovementHandler : MonoBehaviour
 
     void Start()
     {
-        if (headTransform == null)
+        if (headTransform is null)
         {
             Debug.LogError("HeadTransform is null");
             return;
         }
         
+        // Rotation
         initialYaw = headTransform.eulerAngles.y; // save value for initial reference
-        Debug.Log("Head movement started. Initial yaw value: "  + initialYaw);
+        initialPitch = headTransform.eulerAngles.x;
+        initialRotateTilt = headTransform.eulerAngles.z;
+        
+        // Position
+        initialUpAndDown = headTransform.position.y;
+        initialLeftAndRight = headTransform.position.x;
+        initialForwardAndBackward = headTransform.position.z;
     }
 
     void Update()
     {
         MoveLeftRight();
+        MoveUpDown();
+        //MoveForwardBackward();
+        //RotateTilt();
     }
 
     private void MoveLeftRight()
     {
-        if (circle == null)
+        if (circle is null)
         {
-            Debug.LogError("circle is null");
             return;
         }
         
         float currentYaw = headTransform.eulerAngles.y;
-        float differenceInRotationAxeY = currentYaw - initialYaw;
-
-        float movementAxeX = differenceInRotationAxeY * movementSensitivity * Time.deltaTime;
-
-        Vector3 newPosition = circle.anchoredPosition;
-        newPosition.x = Mathf.Clamp(newPosition.x + movementAxeX, -2.5f, 1.5f); //TODO: adjust the value
-        circle.anchoredPosition = newPosition;
+        float yawDelta = Mathf.DeltaAngle(initialYaw, currentYaw);
+        float moveX = yawDelta * movementSensitivity * Time.deltaTime;
         
-        Debug.Log($"Movement: Yaw difference: {differenceInRotationAxeY}, New position for X: {newPosition.x}");
-
+        Vector3 newPosition = circle.anchoredPosition;
+        newPosition.x = Mathf.Clamp(newPosition.x + moveX, -1.5f, 1.5f);
+        circle.anchoredPosition = newPosition;
         
         initialYaw = currentYaw;
     }
+
+    private void MoveUpDown()
+    {
+        if (circle is null)
+        {
+            return;
+        }
+        
+        float currentY = headTransform.position.y;
+        float yOffset = currentY - initialUpAndDown;
+        float moveY = yOffset * movementSensitivity * Time.deltaTime * 100;
+        
+        Vector3 newPosition = circle.anchoredPosition;
+        newPosition.y = Mathf.Clamp(newPosition.y + moveY, -1.5f, 1.5f);
+        circle.anchoredPosition = newPosition;
+    }
+
+    // TODO
+    private void MoveForwardBackward()
+    {
+    }
     
-    private void MoveUpDown() { /* vertical movement */ }
-    private void MoveForwardBackward() { /* depth */ }
-    private void RotateTilt() { /* inclination */ }
+    // TODO
+    private void RotateTilt()
+    {
+    }
     
 }
