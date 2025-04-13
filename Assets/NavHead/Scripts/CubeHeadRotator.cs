@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class CubeHeadController : MonoBehaviour
 {
-    public Transform headTransform; // XR Camera
+    public Transform headTransform; // Main Camera
+    public Transform groundReference;
     public float rotationSpeed = 90f;
     public float rotationThreshold = 10f;
     public float zoomThreshold = 10f;
@@ -13,16 +14,15 @@ public class CubeHeadController : MonoBehaviour
     private Vector3 neutralEuler;
     private Vector3 neutralPosition;
 
-    private bool isYawRotating = false;
-    private bool isPitchRotating = false;
-    private bool isZooming = false;
+    private float currentPitch = 0f;
+    private float currentYaw = 0f;
 
     private float holdTimer = 0f;
     private bool isSelecting = false;
 
     private bool calibrated = false;
     private float calibrationTimer = 0f;
-    private float calibrationDelay = 1f; // calibrate position at start
+    private float calibrationDelay = 1f;
 
     void Update()
     {
@@ -34,76 +34,74 @@ public class CubeHeadController : MonoBehaviour
                 neutralEuler = headTransform.eulerAngles;
                 neutralPosition = headTransform.position;
                 calibrated = true;
-                Debug.Log("Head pose calibrated.");
+                Debug.Log("✅ Head pose calibrated.");
             }
             return;
         }
 
-        HandleRotation();
-        HandleZoom();
+        HandleGestures();
         HandleSelection();
     }
 
-    void HandleRotation()
+    void HandleGestures()
     {
         Vector3 currentEuler = headTransform.eulerAngles;
         Vector3 deltaEuler = new Vector3(
-            Mathf.DeltaAngle(neutralEuler.x, currentEuler.x), // pitch
-            Mathf.DeltaAngle(neutralEuler.y, currentEuler.y), // yaw
-            Mathf.DeltaAngle(neutralEuler.z, currentEuler.z)  // roll
+            Mathf.DeltaAngle(neutralEuler.x, currentEuler.x), // Pitch
+            Mathf.DeltaAngle(neutralEuler.y, currentEuler.y), // Yaw
+            Mathf.DeltaAngle(neutralEuler.z, currentEuler.z)  // Roll
         );
 
-        // YAW (left-right)
-        if (!isYawRotating && Mathf.Abs(deltaEuler.y) > rotationThreshold)
+        float absYaw = Mathf.Abs(deltaEuler.y);
+        float absPitch = Mathf.Abs(deltaEuler.x);
+        float absRoll = Mathf.Abs(deltaEuler.z);
+
+        bool updated = false;
+
+        if (absYaw > rotationThreshold || absPitch > rotationThreshold || absRoll > zoomThreshold)
         {
-            isYawRotating = true;
-        }
-        else if (isYawRotating && Mathf.Abs(deltaEuler.y) <= rotationThreshold * 0.5f)
-        {
-            isYawRotating = false;
+            if (absYaw > absPitch && absYaw > absRoll)
+            {
+                float yawDir = Mathf.Sign(deltaEuler.y);
+                currentYaw += yawDir * rotationSpeed * Time.deltaTime;
+                Debug.Log($"↪ Dominant Yaw: {yawDir}");
+                updated = true;
+            }
+            else if (absPitch > absYaw && absPitch > absRoll)
+            {
+                float pitchDir = Mathf.Sign(deltaEuler.x);
+                currentPitch -= pitchDir * rotationSpeed * Time.deltaTime; // minus to match intuitive up/down
+                currentPitch = Mathf.Clamp(currentPitch, -89f, 89f); // Prevent over-rotation
+                Debug.Log($"↕ Dominant Pitch: {pitchDir}");
+                updated = true;
+            }
+            else if (absRoll > absYaw && absRoll > absPitch)
+            {
+                float zoomDir = Mathf.Sign(deltaEuler.z);
+                transform.localScale += Vector3.one * zoomDir * zoomSpeed * Time.deltaTime;
+                transform.localScale = Vector3.ClampMagnitude(transform.localScale, 3f); // Max zoom
+                transform.localScale = Vector3.Max(transform.localScale, Vector3.one * 0.3f); // Min zoom
+                Debug.Log($"🔎 Dominant Zoom: {(zoomDir > 0 ? "In" : "Out")}");
+            }
         }
 
-        if (isYawRotating)
+        if (updated)
         {
-            float direction = Mathf.Sign(deltaEuler.y);
-            transform.Rotate(Vector3.up, direction * rotationSpeed * Time.deltaTime);
-        }
+            if (groundReference != null)
+            {
+                // Use the groundReference to define "up"
+                Vector3 up = groundReference.up;
+                Vector3 right = Vector3.Cross(up, Vector3.forward).normalized;
+                Quaternion yawRotation = Quaternion.AngleAxis(currentYaw, up);
+                Quaternion pitchRotation = Quaternion.AngleAxis(currentPitch, yawRotation * right);
 
-        // PITCH (up-down)
-        if (!isPitchRotating && Mathf.Abs(deltaEuler.x) > rotationThreshold)
-        {
-            isPitchRotating = true;
-        }
-        else if (isPitchRotating && Mathf.Abs(deltaEuler.x) <= rotationThreshold * 0.5f)
-        {
-            isPitchRotating = false;
-        }
-
-        if (isPitchRotating)
-        {
-            float direction = Mathf.Sign(deltaEuler.x);
-            transform.Rotate(Vector3.right, -direction * rotationSpeed * Time.deltaTime);
-        }
-    }
-
-    void HandleZoom()
-    {
-        Vector3 currentEuler = headTransform.eulerAngles;
-        float roll = Mathf.DeltaAngle(neutralEuler.z, currentEuler.z);
-
-        if (!isZooming && Mathf.Abs(roll) > zoomThreshold)
-        {
-            isZooming = true;
-        }
-        else if (isZooming && Mathf.Abs(roll) <= zoomThreshold * 0.5f)
-        {
-            isZooming = false;
-        }
-
-        if (isZooming)
-        {
-            float direction = Mathf.Sign(roll);
-            transform.localScale += Vector3.one * direction * zoomSpeed * Time.deltaTime;
+                transform.rotation = pitchRotation * yawRotation;
+            }
+            else
+            {
+                // Fallback if groundReference is missing
+                transform.rotation = Quaternion.Euler(currentPitch, currentYaw, 0f);
+            }
         }
     }
 
@@ -118,8 +116,8 @@ public class CubeHeadController : MonoBehaviour
             if (holdTimer >= holdDuration && !isSelecting)
             {
                 isSelecting = true;
-                Debug.Log("🎯 Face selected!");
-                // TODO: start actios here
+                Debug.Log("✅ Face selected!");
+                // Trigger selection action here
             }
         }
         else

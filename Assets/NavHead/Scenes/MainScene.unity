@@ -1272,6 +1272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   headTransform: {fileID: 481985110}
+  groundReference: {fileID: 686439187}
   rotationSpeed: 10
   rotationThreshold: 2
   zoomThreshold: 10
