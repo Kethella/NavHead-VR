@@ -4,12 +4,9 @@ using UnityEngine;
 public class gameController : MonoBehaviour
 {
     
-    public HeadMovementHandler headMovement;
-    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        headMovement.enabled = true;
 
     }
 
