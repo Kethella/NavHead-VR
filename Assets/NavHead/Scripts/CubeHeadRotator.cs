@@ -1,7 +1,9 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CubeHeadController : MonoBehaviour
 {
+    public Image[] selectionSlices;
     public Transform headTransform; // Main Camera
     public Transform groundReference;
     public float rotationSpeed = 90f;
@@ -10,7 +12,7 @@ public class CubeHeadController : MonoBehaviour
     public float zoomSpeed = 0.5f;
     public float selectionDistanceThreshold = 0.25f;
     public float holdDuration = 2f;
-
+    
     private Vector3 neutralEuler;
     private Vector3 neutralPosition;
 
@@ -19,10 +21,15 @@ public class CubeHeadController : MonoBehaviour
 
     private float holdTimer = 0f;
     private bool isSelecting = false;
+    private float sliceTime = 0.5f;
 
     private bool calibrated = false;
     private float calibrationTimer = 0f;
     private float calibrationDelay = 1f;
+    
+    private enum RotationDirection { None, Left, Right }
+    private RotationDirection currentRotationDirection = RotationDirection.None;
+    private float oppositeHoldDuration = 2f;
 
     void Update()
     {
@@ -42,7 +49,7 @@ public class CubeHeadController : MonoBehaviour
         HandleGestures();
         HandleSelection();
     }
-
+    
     void HandleGestures()
     {
         Vector3 currentEuler = headTransform.eulerAngles;
@@ -104,7 +111,8 @@ public class CubeHeadController : MonoBehaviour
             }
         }
     }
-
+    
+   
     void HandleSelection()
     {
         float forwardDistance = Vector3.Distance(headTransform.position, neutralPosition);
@@ -126,4 +134,5 @@ public class CubeHeadController : MonoBehaviour
             isSelecting = false;
         }
     }
+    
 }

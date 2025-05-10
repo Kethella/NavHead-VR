@@ -7,6 +7,12 @@ TagManager:
   - User
   - Canvas
   - Circle
+  - ScreenOff
+  - ScreenOn
+  - LightOn
+  - LightOff
+  - PlanesBackgroundDay
+  - PlanesBackgroundNight
   layers:
   - Default
   - TransparentFX
