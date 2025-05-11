@@ -13,6 +13,13 @@ TagManager:
   - LightOff
   - PlanesBackgroundDay
   - PlanesBackgroundNight
+  - ButtonSound
+  - ButtonLight
+  - ButtonNight
+  - ButtonTV
+  - ButtonAmbience
+  - ButtonSettings
+  - AmbientMusic
   layers:
   - Default
   - TransparentFX
@@ -20,7 +27,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - CubeFace
   - 
   - 
   - 

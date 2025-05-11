@@ -10,6 +10,40 @@ public class CubeFaceSelector : MonoBehaviour
     private float gazeTimer = 0f;
     private GameObject currentFace = null;
 
+    private bool lightOn = false;
+    private bool musicOn = true;
+    private bool nightMode = false;
+    private bool tvOn = false;
+    private bool redAmbience = false;
+
+    private Color originalSunColor;
+
+    [Header("Lights")]
+    public GameObject lightOnObject;
+    public GameObject lightOffObject;
+
+    [Header("Music")]
+    public AudioSource ambientMusic;
+
+    [Header("Backgrounds")]
+    public GameObject backgroundDay;
+    public GameObject backgroundNight;
+
+    [Header("TV")]
+    public GameObject screenOn;
+    public GameObject screenOff;
+
+    [Header("Ambience")]
+    public Light sunLight;
+
+    void Start()
+    {
+        if (sunLight != null)
+        {
+            originalSunColor = sunLight.color;
+        }
+    }
+
     void Update()
     {
         HandleGazeSelection();
@@ -30,7 +64,7 @@ public class CubeFaceSelector : MonoBehaviour
                 if (gazeTimer >= gazeDuration)
                 {
                     SelectFace(currentFace);
-                    gazeTimer = 0f; // Reset after selection
+                    gazeTimer = 0f;
                 }
             }
             else
@@ -65,10 +99,8 @@ public class CubeFaceSelector : MonoBehaviour
 
         foreach (Transform child in transform)
         {
-            Vector3 toHead = (headTransform.position - child.position).normalized;
-            Vector3 faceNormal = child.forward; // The "outward" direction of the face
-
-            float dot = Vector3.Dot(faceNormal, toHead);
+            Vector3 toFace = (child.position - headTransform.position).normalized;
+            float dot = Vector3.Dot(child.forward, toFace);
             if (dot > bestDot)
             {
                 bestDot = dot;
@@ -81,8 +113,48 @@ public class CubeFaceSelector : MonoBehaviour
 
     void SelectFace(GameObject face)
     {
-        Debug.Log($"🟩 Face '{face.name}' selecionada!");
-        //TODO
-        // Trigger custom events or methods
+        Debug.Log($"Face '{face.name}' selected!");
+
+        switch (face.tag)
+        {
+            case "ButtonLight":
+                lightOn = !lightOn;
+                if (lightOnObject != null) lightOnObject.SetActive(lightOn);
+                if (lightOffObject != null) lightOffObject.SetActive(!lightOn);
+                break;
+
+            case "ButtonSound":
+                musicOn = !musicOn;
+                if (ambientMusic != null)
+                {
+                    if (musicOn) ambientMusic.Play();
+                    else ambientMusic.Pause();
+                }
+                break;
+
+            case "ButtonNight":
+                nightMode = !nightMode;
+                if (backgroundDay != null) backgroundDay.SetActive(!nightMode);
+                if (backgroundNight != null) backgroundNight.SetActive(nightMode);
+                break;
+
+            case "ButtonTV":
+                tvOn = !tvOn;
+                if (screenOn != null) screenOn.SetActive(tvOn);
+                if (screenOff != null) screenOff.SetActive(!tvOn);
+                break;
+
+            case "ButtonAmbience":
+                redAmbience = !redAmbience;
+                if (sunLight != null)
+                {
+                    sunLight.color = redAmbience ? Color.red : originalSunColor;
+                }
+                break;
+
+            default:
+                Debug.LogWarning("Face without action.");
+                break;
+        }
     }
 }

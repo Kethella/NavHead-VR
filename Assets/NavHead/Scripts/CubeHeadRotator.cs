@@ -7,12 +7,12 @@ public class CubeHeadController : MonoBehaviour
     public Transform headTransform; // Main Camera
     public Transform groundReference;
     public float rotationSpeed = 90f;
-    public float rotationThreshold = 10f;
-    public float zoomThreshold = 10f;
+    public float rotationThreshold = 7f;
+    public float zoomThreshold = 7f;
     public float zoomSpeed = 0.5f;
     public float selectionDistanceThreshold = 0.25f;
     public float holdDuration = 2f;
-    
+
     private Vector3 neutralEuler;
     private Vector3 neutralPosition;
 
@@ -21,15 +21,13 @@ public class CubeHeadController : MonoBehaviour
 
     private float holdTimer = 0f;
     private bool isSelecting = false;
-    private float sliceTime = 0.5f;
 
     private bool calibrated = false;
     private float calibrationTimer = 0f;
     private float calibrationDelay = 1f;
-    
+
     private enum RotationDirection { None, Left, Right }
     private RotationDirection currentRotationDirection = RotationDirection.None;
-    private float oppositeHoldDuration = 2f;
 
     void Update()
     {
@@ -49,7 +47,7 @@ public class CubeHeadController : MonoBehaviour
         HandleGestures();
         HandleSelection();
     }
-    
+
     void HandleGestures()
     {
         Vector3 currentEuler = headTransform.eulerAngles;
@@ -77,8 +75,8 @@ public class CubeHeadController : MonoBehaviour
             else if (absPitch > absYaw && absPitch > absRoll)
             {
                 float pitchDir = Mathf.Sign(deltaEuler.x);
-                currentPitch -= pitchDir * rotationSpeed * Time.deltaTime; // minus to match intuitive up/down
-                currentPitch = Mathf.Clamp(currentPitch, -89f, 89f); // Prevent over-rotation
+                currentPitch -= pitchDir * rotationSpeed * Time.deltaTime;
+                currentPitch = Mathf.Clamp(currentPitch, -89f, 89f);
                 Debug.Log($"↕ Dominant Pitch: {pitchDir}");
                 updated = true;
             }
@@ -86,8 +84,8 @@ public class CubeHeadController : MonoBehaviour
             {
                 float zoomDir = Mathf.Sign(deltaEuler.z);
                 transform.localScale += Vector3.one * zoomDir * zoomSpeed * Time.deltaTime;
-                transform.localScale = Vector3.ClampMagnitude(transform.localScale, 3f); // Max zoom
-                transform.localScale = Vector3.Max(transform.localScale, Vector3.one * 0.3f); // Min zoom
+                transform.localScale = Vector3.ClampMagnitude(transform.localScale, 3f);
+                transform.localScale = Vector3.Max(transform.localScale, Vector3.one * 0.3f);
                 Debug.Log($"🔎 Dominant Zoom: {(zoomDir > 0 ? "In" : "Out")}");
             }
         }
@@ -96,7 +94,6 @@ public class CubeHeadController : MonoBehaviour
         {
             if (groundReference != null)
             {
-                // Use the groundReference to define "up"
                 Vector3 up = groundReference.up;
                 Vector3 right = Vector3.Cross(up, Vector3.forward).normalized;
                 Quaternion yawRotation = Quaternion.AngleAxis(currentYaw, up);
@@ -106,13 +103,18 @@ public class CubeHeadController : MonoBehaviour
             }
             else
             {
-                // Fallback if groundReference is missing
                 transform.rotation = Quaternion.Euler(currentPitch, currentYaw, 0f);
             }
         }
+
+        if (Mathf.Abs(deltaEuler.y) < rotationThreshold * 0.5f)
+        {
+            currentRotationDirection = RotationDirection.None;
+            Debug.Log("Stop rotation: head stabilized.");
+        }
     }
-    
-   
+
+    //DOES NOT WORK
     void HandleSelection()
     {
         float forwardDistance = Vector3.Distance(headTransform.position, neutralPosition);
@@ -125,7 +127,7 @@ public class CubeHeadController : MonoBehaviour
             {
                 isSelecting = true;
                 Debug.Log("✅ Face selected!");
-                // Trigger selection action here
+                // Trigger selection action here (e.g., change color or notify another script)
             }
         }
         else
@@ -134,5 +136,4 @@ public class CubeHeadController : MonoBehaviour
             isSelecting = false;
         }
     }
-    
 }
