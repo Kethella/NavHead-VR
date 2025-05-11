@@ -134,9 +134,25 @@ public class CubeFaceSelector : MonoBehaviour
 
             case "ButtonNight":
                 nightMode = !nightMode;
+
                 if (backgroundDay != null) backgroundDay.SetActive(!nightMode);
                 if (backgroundNight != null) backgroundNight.SetActive(nightMode);
+
+                if (sunLight != null)
+                {
+                    if (nightMode)
+                    {
+                        sunLight.intensity = 0.5f;
+                        sunLight.color = new Color32(67, 57, 196, 255); // #4339C4
+                    }
+                    else
+                    {
+                        sunLight.intensity = 1f;
+                        sunLight.color = originalSunColor;
+                    }
+                }
                 break;
+
 
             case "ButtonTV":
                 tvOn = !tvOn;
@@ -148,9 +164,26 @@ public class CubeFaceSelector : MonoBehaviour
                 redAmbience = !redAmbience;
                 if (sunLight != null)
                 {
-                    sunLight.color = redAmbience ? Color.red : originalSunColor;
+                    if (redAmbience)
+                    {
+                        sunLight.color = Color.red;
+                    }
+                    else
+                    {
+                        if (nightMode)
+                        {
+                            sunLight.intensity = 0.5f;
+                            sunLight.color = new Color32(67, 57, 196, 255); // #4339C4
+                        }
+                        else
+                        {
+                            sunLight.intensity = 1f;
+                            sunLight.color = originalSunColor;
+                        }
+                    }
                 }
                 break;
+
 
             default:
                 Debug.LogWarning("Face without action.");
