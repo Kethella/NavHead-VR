@@ -45,7 +45,6 @@ public class CubeHeadController : MonoBehaviour
         }
 
         HandleGestures();
-        HandleSelection();
     }
 
     void HandleGestures()
@@ -113,27 +112,5 @@ public class CubeHeadController : MonoBehaviour
             Debug.Log("Stop rotation: head stabilized.");
         }
     }
-
-    //DOES NOT WORK
-    void HandleSelection()
-    {
-        float forwardDistance = Vector3.Distance(headTransform.position, neutralPosition);
-
-        if (forwardDistance > selectionDistanceThreshold)
-        {
-            holdTimer += Time.deltaTime;
-
-            if (holdTimer >= holdDuration && !isSelecting)
-            {
-                isSelecting = true;
-                Debug.Log("✅ Face selected!");
-                // Trigger selection action here (e.g., change color or notify another script)
-            }
-        }
-        else
-        {
-            holdTimer = 0f;
-            isSelecting = false;
-        }
-    }
+    
 }
