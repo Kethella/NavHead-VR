@@ -20,6 +20,7 @@ TagManager:
   - ButtonAmbience
   - ButtonSettings
   - AmbientMusic
+  - Instructions
   layers:
   - Default
   - TransparentFX
