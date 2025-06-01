@@ -710,7 +710,7 @@ GameObject:
   - component: {fileID: 142906692}
   m_Layer: 0
   m_Name: Instructions
-  m_TagString: Untagged
+  m_TagString: Instructions
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1076,7 +1076,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &273304048
 Transform:
   m_ObjectHideFlags: 0
@@ -1085,13 +1085,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 273304047}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.61237246, y: -0.35355335, z: 0.35355335, w: 0.61237246}
-  m_LocalPosition: {x: 5.34, y: 1.27, z: -10.14}
-  m_LocalScale: {x: 0.15, y: 1, z: 0.25}
+  m_LocalRotation: {x: 0.579228, y: -0.40557984, z: 0.40557984, w: 0.579228}
+  m_LocalPosition: {x: 3.068, y: 1.27, z: -9.304}
+  m_LocalScale: {x: 0.12, y: 1, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 142906692}
-  m_LocalEulerAnglesHint: {x: 90, y: 30, z: 90}
+  m_LocalEulerAnglesHint: {x: 90, y: 20, z: 90}
 --- !u!64 &273304049
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3500,6 +3500,25 @@ MonoBehaviour:
   screenOn: {fileID: 527749239}
   screenOff: {fileID: 1546891875}
   sunLight: {fileID: 410087040}
+  instructions: {fileID: 273304047}
+  buttonLightRenderer: {fileID: 549417227}
+  lightOnMaterial: {fileID: 2100000, guid: e6e668b5fec0fc443837aba241439f98, type: 2}
+  lightOffMaterial: {fileID: 2100000, guid: bfb09e5d805755e43b6e357e787dac56, type: 2}
+  ButtonSoundRenderer: {fileID: 334558081}
+  SoundOnMaterial: {fileID: 2100000, guid: 83ea9cf3e3c04484ca08898d081f9135, type: 2}
+  SoundOffMaterial: {fileID: 2100000, guid: 03d64d4e943292b449fe3b02fc64fc43, type: 2}
+  BackgroundRenderer: {fileID: 1587046132}
+  BackgroundDayMaterial: {fileID: 2100000, guid: 0cbf90d1dffec8447999e3d84837beb2, type: 2}
+  BackgroundNightMaterial: {fileID: 2100000, guid: fadc1dd042d9d2b48b863cb0dffeb09d, type: 2}
+  ButtonTVRenderer: {fileID: 461901519}
+  TvOnMaterial: {fileID: 2100000, guid: da5138b2de051b7448a1d294766635b6, type: 2}
+  TvOffMaterial: {fileID: 2100000, guid: c558cd871736cee4897b202ac50d205d, type: 2}
+  ButtonRedRenderer: {fileID: 104484631}
+  RedOnMaterial: {fileID: 2100000, guid: 3747104d2ce2c4348a44f7bc028a4dc3, type: 2}
+  RedOffMaterial: {fileID: 2100000, guid: c5e334eadaa6e45479b3544e3cab7680, type: 2}
+  ButtonInstructionsRenderer: {fileID: 1774868680}
+  InstructionsOnMaterial: {fileID: 2100000, guid: 51fc0f2acbd4f824388d74b0ca114136, type: 2}
+  InstructionsOffMaterial: {fileID: 2100000, guid: afb974e35899d3a4793c07d4abcd3a4d, type: 2}
 --- !u!1 &709015395
 GameObject:
   m_ObjectHideFlags: 0
@@ -6336,7 +6355,7 @@ GameObject:
   - component: {fileID: 1774868679}
   m_Layer: 6
   m_Name: FaceTop
-  m_TagString: ButtonSettings
+  m_TagString: Instructions
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
