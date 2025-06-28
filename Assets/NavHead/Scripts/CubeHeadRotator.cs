@@ -113,4 +113,19 @@ public class CubeHeadController : MonoBehaviour
         }
     }
     
+    public void ResetToInitialState(Vector3 position, Quaternion rotation, Vector3 scale)
+    {
+        // Reset transform
+        transform.position = position;
+        transform.rotation = rotation;
+        transform.localScale = scale;
+
+        // Reset lógica interna
+        currentPitch = 0f;
+        currentYaw = 0f;
+        calibrated = false;
+        calibrationTimer = 0f;
+
+        Debug.Log("🔄 Cube state reset.");
+    }
 }

@@ -7,6 +7,8 @@ public class GameController : MonoBehaviour
     private Quaternion initialRotation;
     private Vector3 initialScale;
 
+    private CubeHeadController cubeHeadController;
+
     private bool cubeVisible = false;
 
     void Start()
@@ -16,6 +18,8 @@ public class GameController : MonoBehaviour
             initialPosition = cube.transform.position;
             initialRotation = cube.transform.rotation;
             initialScale = cube.transform.localScale;
+
+            cubeHeadController = cube.GetComponent<CubeHeadController>();
 
             cube.SetActive(false); // hidden at the beginning
         }
@@ -29,11 +33,13 @@ public class GameController : MonoBehaviour
 
             if (cubeVisible)
             {
-                // reset position and activate
-                cube.transform.position = initialPosition;
-                cube.transform.rotation = initialRotation;
-                cube.transform.localScale = initialScale;
                 cube.SetActive(true);
+
+                if (cubeHeadController != null)
+                {
+                    cubeHeadController.ResetToInitialState(initialPosition, initialRotation, initialScale);
+                }
+
                 Debug.Log("🟩 Cube activated.");
             }
             else
