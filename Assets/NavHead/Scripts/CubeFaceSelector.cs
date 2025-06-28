@@ -113,7 +113,7 @@ public class CubeFaceSelector : MonoBehaviour
 
     void HandleKeyboardSelection()
     {
-        if (Input.GetKeyDown(KeyCode.H))
+        if (Input.GetKeyDown(KeyCode.S))
         {
             GameObject closestFace = FindFaceFacingHead();
             if (closestFace != null)
