@@ -18,28 +18,30 @@ public class CubeFaceSelector : MonoBehaviour
 
     private Color originalSunColor;
 
-    [Header("Lights")] 
+    private bool isAlignMode = true; // Start in alignment mode (gauze)
+
+    [Header("Lights")]
     public GameObject lightOnObject;
     public GameObject lightOffObject;
 
-    [Header("Music")] 
+    [Header("Music")]
     public AudioSource ambientMusic;
 
-    [Header("Backgrounds")] 
+    [Header("Backgrounds")]
     public GameObject backgroundDay;
     public GameObject backgroundNight;
 
-    [Header("TV")] 
+    [Header("TV")]
     public GameObject screenOn;
     public GameObject screenOff;
 
-    [Header("Ambience")] 
+    [Header("Ambience")]
     public Light sunLight;
 
-    [Header("Instruction")] 
+    [Header("Instruction")]
     public GameObject instructions;
 
-    [Header("Materials das faces")] 
+    [Header("Materials das faces")]
     public Renderer buttonLightRenderer;
     public Material lightOnMaterial;
     public Material lightOffMaterial;
@@ -64,6 +66,10 @@ public class CubeFaceSelector : MonoBehaviour
     public Material InstructionsOnMaterial;
     public Material InstructionsOffMaterial;
 
+    [Header("Selection Mode UI")]
+    public GameObject AlignSelectionCanvas;
+    public GameObject BlowSelectionCanvas;
+
     void Start()
     {
         if (sunLight != null)
@@ -71,14 +77,42 @@ public class CubeFaceSelector : MonoBehaviour
             originalSunColor = sunLight.color;
         }
 
-        // Initialize materials
         UpdateAllMaterials();
+        UpdateSelectionModeUI();
     }
 
     void Update()
     {
-        HandleGazeSelection();
-        HandleKeyboardSelection();
+        HandleModeSwitch();
+
+        if (isAlignMode)
+        {
+            HandleGazeSelection();
+        }
+        else
+        {
+            HandleKeyboardSelection();
+        }
+    }
+
+    void HandleModeSwitch()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            isAlignMode = !isAlignMode;
+            gazeTimer = 0f;
+            currentFace = null;
+            UpdateSelectionModeUI();
+            Debug.Log("Mode switched: " + (isAlignMode ? "Align (Gaze)" : "Tecla S"));
+        }
+    }
+
+    void UpdateSelectionModeUI()
+    {
+        if (AlignSelectionCanvas != null)
+            AlignSelectionCanvas.SetActive(isAlignMode);
+        if (BlowSelectionCanvas != null)
+            BlowSelectionCanvas.SetActive(!isAlignMode);
     }
 
     void HandleGazeSelection()
@@ -175,27 +209,24 @@ public class CubeFaceSelector : MonoBehaviour
                     {
                         if (redAmbience)
                         {
-                            // Red light on at night: turns on the red sun
                             sunLight.intensity = 1f;
                             sunLight.color = Color.red;
                         }
                         else
                         {
                             sunLight.intensity = 0.5f;
-                            sunLight.color = new Color32(67, 57, 196, 255); // azul escuro
+                            sunLight.color = new Color32(67, 57, 196, 255);
                         }
                     }
                     else
                     {
                         if (redAmbience)
                         {
-                            // During the day with red light: red sun
                             sunLight.intensity = 1f;
                             sunLight.color = Color.red;
                         }
                         else
                         {
-                            // Day
                             sunLight.intensity = 1f;
                             sunLight.color = originalSunColor;
                         }
@@ -217,20 +248,12 @@ public class CubeFaceSelector : MonoBehaviour
                     if (redAmbience)
                     {
                         sunLight.color = Color.red;
-                        sunLight.intensity = 1f; // Ensures the sun turns on in night mode (when red light is on)
+                        sunLight.intensity = 1f;
                     }
                     else
                     {
-                        if (nightMode)
-                        {
-                            sunLight.intensity = 0.5f;
-                            sunLight.color = new Color32(67, 57, 196, 255);
-                        }
-                        else
-                        {
-                            sunLight.intensity = 1f;
-                            sunLight.color = originalSunColor;
-                        }
+                        sunLight.intensity = nightMode ? 0.5f : 1f;
+                        sunLight.color = nightMode ? new Color32(67, 57, 196, 255) : originalSunColor;
                     }
                 }
                 break;
@@ -247,7 +270,7 @@ public class CubeFaceSelector : MonoBehaviour
                 break;
         }
 
-        UpdateAllMaterials(); // Updates all faces whenever an action is performed
+        UpdateAllMaterials();
     }
 
     void UpdateAllMaterials()
