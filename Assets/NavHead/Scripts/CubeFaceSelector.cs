@@ -70,6 +70,10 @@ public class CubeFaceSelector : MonoBehaviour
     public GameObject AlignSelectionCanvas;
     public GameObject BlowSelectionCanvas;
 
+    private GameObject lastSelectedFace = null;
+    private float lastSelectionTime = -Mathf.Infinity;
+    private float faceCooldown = 8f; // seconds
+    
     void Start()
     {
         if (sunLight != null)
@@ -179,7 +183,15 @@ public class CubeFaceSelector : MonoBehaviour
     void SelectFace(GameObject face)
     {
         Debug.Log($"Face '{face.name}' selected!");
+        
+        if (face == lastSelectedFace && Time.time - lastSelectionTime < faceCooldown)
+        {
+            Debug.Log($"⏳ Ignored repeated selection of '{face.name}' due to cooldown.");
+            return;
+        }
 
+        lastSelectedFace = face;
+        lastSelectionTime = Time.time;
         switch (face.tag)
         {
             case "ButtonLight":
