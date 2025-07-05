@@ -3275,17 +3275,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a696ac4a46db808488867e9809012bf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectionSlices:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  selectionSlices: []
   headTransform: {fileID: 481985110}
   groundReference: {fileID: 686439187}
-  rotationSpeed: 10
-  rotationThreshold: 7
-  zoomThreshold: 7
-  zoomSpeed: 0.5
+  rotationSpeed: 15
+  rotationThreshold: 10
+  zoomThreshold: 12
+  zoomSpeed: 0.3
   selectionDistanceThreshold: 0.25
   holdDuration: 2
 --- !u!114 &707513966
