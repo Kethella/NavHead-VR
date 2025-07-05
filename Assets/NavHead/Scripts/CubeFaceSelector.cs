@@ -1,25 +1,32 @@
 using UnityEngine;
 
+// This script allows selecting faces of a cube either by gazing at them or pressing a  keyboard key
+// Each face triggers a different environmental or UI effect
 public class CubeFaceSelector : MonoBehaviour
 {
     public Transform headTransform;
+    
+    // Face alignment ("Gaze") detection settings
     public float gazeDuration = 4f;
     public float gazeDistance = 5f;
-    public LayerMask faceLayer;
+    public LayerMask faceLayer; // Only detect faces in this layer
 
+    // "Gaze" timer and current face being looked at
     private float gazeTimer = 0f;
     private GameObject currentFace = null;
 
+    // State flags for different interactive elements
     private bool lightOn = false;
     private bool musicOn = true;
     private bool nightMode = false;
     private bool tvOn = false;
     private bool redAmbience = false;
 
-    private Color originalSunColor;
+    private Color originalSunColor; // Save the original color of the sun for resetting
 
-    private bool isAlignMode = true; // Start in alignment mode (gauze)
+    private bool isAlignMode = true; // True = Face Aligment ("gaze") mode, False = Keyboard (S key) mode
 
+    // UI and Environment References
     [Header("Lights")]
     public GameObject lightOnObject;
     public GameObject lightOffObject;
@@ -41,7 +48,8 @@ public class CubeFaceSelector : MonoBehaviour
     [Header("Instruction")]
     public GameObject instructions;
 
-    [Header("Materials das faces")]
+    // Materials for visual feedback on faces
+    [Header("Materials of the faces")]
     public Renderer buttonLightRenderer;
     public Material lightOnMaterial;
     public Material lightOffMaterial;
@@ -66,39 +74,44 @@ public class CubeFaceSelector : MonoBehaviour
     public Material InstructionsOnMaterial;
     public Material InstructionsOffMaterial;
 
+    // UI indicators to show which selection mode is active
     [Header("Selection Mode UI")]
     public GameObject AlignSelectionCanvas;
     public GameObject BlowSelectionCanvas;
 
+    // Cooldown to prevent repeated accidental selection
     private GameObject lastSelectedFace = null;
     private float lastSelectionTime = -Mathf.Infinity;
     private float faceCooldown = 8f; // seconds
     
     void Start()
     {
+        // Store the sun's original color for later restoration
         if (sunLight != null)
         {
             originalSunColor = sunLight.color;
         }
 
+        // Set initial visual states
         UpdateAllMaterials();
         UpdateSelectionModeUI();
     }
 
     void Update()
     {
-        HandleModeSwitch();
+        HandleModeSwitch(); // Toggle between face alignment and Keyboard mode
 
         if (isAlignMode)
         {
-            HandleGazeSelection();
+            HandleGazeSelection(); // Use head movement to select
         }
         else
         {
-            HandleKeyboardSelection();
+            HandleKeyboardSelection(); // Use keyboard input to select
         }
     }
-
+    
+    // Toggle between face alignment and Keyboard mode when 'L' is pressed
     void HandleModeSwitch()
     {
         if (Input.GetKeyDown(KeyCode.L))
@@ -110,7 +123,8 @@ public class CubeFaceSelector : MonoBehaviour
             Debug.Log("Mode switched: " + (isAlignMode ? "Align (Gaze)" : "Tecla S"));
         }
     }
-
+    
+    // Show/hide selection mode UI canvases
     void UpdateSelectionModeUI()
     {
         if (AlignSelectionCanvas != null)
@@ -119,6 +133,7 @@ public class CubeFaceSelector : MonoBehaviour
             BlowSelectionCanvas.SetActive(!isAlignMode);
     }
 
+    // Select a face by looking at it for a fixed duration
     void HandleGazeSelection()
     {
         Ray ray = new Ray(headTransform.position, headTransform.forward);
@@ -149,6 +164,7 @@ public class CubeFaceSelector : MonoBehaviour
         }
     }
 
+    // Select the closest face facing the user when 'S' is pressed
     void HandleKeyboardSelection()
     {
         if (Input.GetKeyDown(KeyCode.S))
@@ -161,6 +177,7 @@ public class CubeFaceSelector : MonoBehaviour
         }
     }
 
+    // Find which face is best aligned with the user's view direction
     GameObject FindFaceFacingHead()
     {
         GameObject bestFace = null;
@@ -179,19 +196,23 @@ public class CubeFaceSelector : MonoBehaviour
 
         return bestFace;
     }
-
+    
+    // Execute the logic for the selected face
     void SelectFace(GameObject face)
     {
         Debug.Log($"Face '{face.name}' selected!");
         
+        // Prevent rapid reselection of the same fac
         if (face == lastSelectedFace && Time.time - lastSelectionTime < faceCooldown)
         {
-            Debug.Log($"⏳ Ignored repeated selection of '{face.name}' due to cooldown.");
+            Debug.Log($"Ignored repeated selection of '{face.name}' due to cooldown.");
             return;
         }
 
         lastSelectedFace = face;
         lastSelectionTime = Time.time;
+        
+        // Trigger action based on face's tag
         switch (face.tag)
         {
             case "ButtonLight":
@@ -282,9 +303,10 @@ public class CubeFaceSelector : MonoBehaviour
                 break;
         }
 
-        UpdateAllMaterials();
+        UpdateAllMaterials(); // Refresh button visuals after state change
     }
-
+    
+    // Update visual feedback materials based on states
     void UpdateAllMaterials()
     {
         UpdateLightFaceMaterial();
