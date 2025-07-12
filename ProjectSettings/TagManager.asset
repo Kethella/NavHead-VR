@@ -2,8 +2,25 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
-  tags: []
+  serializedVersion: 3
+  tags:
+  - User
+  - Canvas
+  - Circle
+  - ScreenOff
+  - ScreenOn
+  - LightOn
+  - LightOff
+  - PlanesBackgroundDay
+  - PlanesBackgroundNight
+  - ButtonSound
+  - ButtonLight
+  - ButtonNight
+  - ButtonTV
+  - ButtonAmbience
+  - ButtonSettings
+  - AmbientMusic
+  - Instructions
   layers:
   - Default
   - TransparentFX
@@ -11,7 +28,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - CubeFace
   - 
   - 
   - 
@@ -50,27 +67,3 @@ TagManager:
   - Light Layer 5
   - Light Layer 6
   - Light Layer 7
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
