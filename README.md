@@ -96,6 +96,9 @@ If you’re opening the project for the first time or importing into a different
 
 ## Thesis
 
+[Download the project thesis (PDF)]([Documentation.pdf](https://github.com/Kethella/NavHead-VR/blob/main/Abschlussarbeit_kc029_KethellaOliveira_43385_compressed.pdf))
+
+
 
 
 
